@@ -1,13 +1,13 @@
 <body>
 
-<div class="body" style="padding-top: 100px;">
+  <div class="body" style="padding-top: 100px;">
 	<div class="container">
 		<div class="row">
 			<%= render 'layouts/list', user: @user, book:@book %>
     
-    <div class="col-xs-9">
-				<h3>Books</h3>
-				<table class="table table-striped">
+            <div class="col-xs-9">
+			  <h3>Books</h3>
+			  <table class="table table-striped">
 					<thead>
 						<tr>
 							<th></th>
@@ -27,8 +27,36 @@
                                  <%= book.title %>
                                 <% end %></td>
 							<td><%=book.body%></td>
+							<td><li>
+    <i class="fa fa-calendar"></i><%= book.created_at.strftime('%Y/%m/%d') %>
+</li>
+<!-- ここから -->
+<% if book.favorited_by?(current_user) %>
+<li>
+    <%= link_to favorites_path(book_id: book,action: :index), method: :delete do %>
+    <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
+    <%= book.favorites.count %> いいね
+    <% end %>
+</li>
+<% else %>
+<li>
+    <%= link_to favorites_path(book_id: book), method: :post do %>
+    <i class="fa fa-heart-o" aria-hidden="true"></i>
+    <%= book.favorites.count %> いいね
+    <% end %>
+</li>
+
+
+
+
+<% end %>
+<td>
+	コメント数: 
+	<%= book.book_comments.count %>
+</td>
+
 						</tr>
-						<%end%>
+<%end%>
 					</tbody>
 				</table>
 			</div>
@@ -40,7 +68,16 @@
 
 
 
+<!-- 
+  user -> bookの情報
+  user.books
 
+  book -> userの情報
+  book.user
+
+  book -> book_commentの情報
+  book.book_comments.count
+-->
 
 
 

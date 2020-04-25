@@ -23,11 +23,43 @@
 							<td><%= attachment_image_tag @user, :profile_image, :fill, 40, 40, fallback: 'image.jpg' %><br><%=link_to @user.name, user_path(@user) %></td>
 							<td><%=@mybook.title%></td>
 							<td><%=@mybook.body%></td>
+							<td><li>
+    <i class="fa fa-calendar"></i><%= @mybook.created_at.strftime('%Y/%m/%d') %>
+</li>
+<!-- ここから -->
+<% if @mybook.favorited_by?(current_user) %>
+<li>
+    <%= link_to favorites_path(book_id: @mybook), method: :delete do %>
+    <i class="fa fa-heart" aria-hidden="true" style="color: red;"></i>
+    <%= @mybook.favorites.count %> いいね
+    <% end %>
+</li>
+<% else %>
+<li>
+    <%= link_to favorites_path(book_id: @mybook), method: :post do %>
+    <i class="fa fa-heart-o" aria-hidden="true"></i>
+    <%= @mybook.favorites.count %> いいね
+    <% end %>
+</li>
+<% end %></td>
 							<% if current_user.id == @user.id %>
 							<td><%= link_to "Edit", edit_book_path(@mybook) %></td>
 							<td><%=link_to "Destroy", book_path(@mybook), method: :delete , "data-confirm" => "本当に削除しますか？"%></td>
+							
 							<% end %>
+							<td>
+							コメント数: 
+							<%= @mybook.book_comments.count %>
+							</td>
 						</tr>
+						<%= form_for [@mybook, @book_comment] do |f| %>
+    					<div class="row">
+        				<div class="col-sm-12">
+           				 <%= f.text_area :comment, rows:'5', class: "form-control",placeholder: "コメントをここに" %>
+        				</div>
+   						 </div>
+   					 <%= f.submit "送信する", class: "btn btn-lg btn-base-1 mt-20 pull-right" %>
+				<% end %>
 				</tbody>
 				</table>
 			</div>
